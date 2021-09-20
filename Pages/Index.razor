@@ -1,0 +1,82 @@
+﻿@page "/"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+<PageHeader PageHeaderTile="Dashboard" />
+
+
+<div class="row">
+    <!-- ============================================================== -->
+    <!-- data table  -->
+    <!-- ============================================================== -->
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    Contacts Overview <span class="float-right">Last 30 Days</span>
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                        <div class="card bg-primary-light shadow-none">
+                            <div class="card-body p-4">
+                                <h2 class="display-5">3</h2>
+                                <p class="text-dark"> New Contacts</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                        <div class="card bg-warning-light shadow-none">
+                            <div class="card-body p-4">
+                                <h2 class="display-5">25</h2>
+                                <p class="text-dark">Highest Created in Day</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                        <div class="card bg-danger-light shadow-none">
+                            <div class="card-body p-4">
+                                <h2 class="display-5">8</h2>
+                                <p class="text-dark">Average Contact Created</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                        <div class="card bg-success-light shadow-none">
+                            <div class="card-body p-4">
+                                <h2 class="display-5">1200</h2>
+                                <p class="text-dark"> Total Contact Created</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div class="card">
+            <h5 class="card-header">Contacts Created By Day <span class="d-inline-block float-right">Last 30 Days</span></h5>
+            <div class="card-body">
+                <div class="ct-chart-vertical ct-golden-section"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div class="card">
+            <h5 class="card-header">New Contact by Source <span class="d-inline-block float-right">Last 30 Days</span></h5>
+            <div class="card-body">
+                <div class="ct-chart ct-golden-section"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+ [CascadingParameter]
+ Task<AuthenticationState> authenticationStateTask { get; set; }
+
+}

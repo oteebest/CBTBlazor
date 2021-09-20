@@ -1,0 +1,165 @@
+﻿@using CBTBlazor.Component
+@using CBTBlazor.Shared
+@using BootstrapPaging
+@using Microsoft.AspNetCore.Components.Web
+@page "/questions"
+
+
+<PageHeader PageHeaderTile="Questions"></PageHeader>
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="accrodion-regular">
+            <table class="table">
+                <tr>
+                    <td>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col form-group">
+                                        <button style="width: 120px" @onclick="@(() => ShowModal(""))"
+                                                class="btn btn-primary btn-sm float-right">
+                                            Add Question
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col form-group">
+
+
+                                        <select @bind="DifficultyId" id="difficultyDDList"
+                                                class="form-control form-control-sm">
+
+                                            @((MarkupString)"<option value=\"\">Select Difficulty</option>")
+                                            @foreach (var difficulty in DifficultytList)
+                                            {
+                                                <option value="@difficulty.Id">@difficulty.Name</option>
+                                            }
+                                        </select>
+
+                                    </div>
+                                    <div class="col form-group">
+                                        <select @bind="SubjectId" id="subjectDDList"
+                                                class="form-control form-control-sm">
+                                            @((MarkupString)"<option value=\"\">Select Subject</option>")
+                                            @foreach (var subject in SubjectList)
+                                            {
+                                                <option value="@subject.Id">@subject.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col form-group">
+                                        <button style="width: 120px" @onclick="Filter"
+                                                class="btn btn-primary btn-sm float-right"
+                                                id="btnCreate">
+                                            Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+        
+
+                @{ int i = 1;}
+
+                @foreach (var question in ClientQuestionData.data.Items)
+                {
+                    <tr>
+                        <td>
+                            <div id="accordion">
+                                <div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link"
+                                                    data-toggle="collapse"
+                                                    data-target="#collapseOne"
+                                                    aria-expanded="true"
+                                                    aria-controls="collapseOne">
+                                                Question @( i++.ToString() )
+                                            </button>
+                                        </h5>
+                                    </div>
+                                    <div id="collapseOne"
+                                         class="collapse show"
+                                         aria-labelledby="headingOne"
+                                         data-parent="#accordion">
+                                        <div class="card-body">
+                                            <p class="lead">@question.Text </p>
+                                            <p>
+                                                <div class="form-check">
+                                                    @foreach (var option in question.Options)
+                                                    {
+                                                        if (question.QuestionType == "SingleChoice")
+                                                        {
+                                                            <label class="custom-control custom-radio">
+
+                                                                @if (option.IsAnswer == true)
+                                                                {
+                                                                    <input type="radio"
+                                                                           name="@i"
+                                                                           disabled
+                                                                           class="custom-control-input"
+                                                                           checked="checked" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="radio"
+                                                                           name="@i"
+                                                                           disabled
+                                                                           class="custom-control-input" />
+                                                                }
+
+
+
+
+                                                                <span class="custom-control-label">
+                                                                    @option.Text
+                                                                </span>
+                                                            </label>
+                                                        }
+                                                        else
+                                                        {
+                                                            <label class="custom-control custom-checkbox">
+
+                                                                <input type="checkbox"
+                                                                       disabled
+                                                                       checked="@option.IsAnswer"
+                                                                       class="custom-control-input" />
+
+                                                                <span class="custom-control-label">
+                                                                    @option.Text
+                                                                </span>
+                                                            </label>
+                                                        }
+                                                    }
+                                                </div>
+                                            </p>
+                                            <button class="btn btn-secondary"  @onclick="@(() => ShowModal(question.Id))"> Edit  </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+
+            </table>
+            <PagerComponent CurrentIndex="CurrentIndex" OnPageCallBack="Page" PagerEndIndex="PagerEndIndex" PagerStartIndex="PagerStartIndex" PagerEnableNext="PagerEnableNext" PagerEnablePrevious="PagerEnablePrevious" PageNumberParam="PageNumber" TotalSizeParam="TotalSize" PageSizeParam="PageSize"></PagerComponent>
+
+
+
+
+            <ConfirmDialog @ref="ConfirmDialog" ConfirmationTitle="Delete Question" ConfirmationChanged="DeleteItem" ConfirmationMessage="Are you sure you want to delete this question?"></ConfirmDialog>
+            <FormWrapper @ref="ModalForm" Title="Question">
+                <QuestionForm Question="QuestionItem" @ref="QuestionForm" SubjectList="SubjectList" DifficultytList="DifficultytList" OnCloseCallBack="HandleClose" OnSubmitCallBack="HandleSubmit"></QuestionForm>
+            </FormWrapper>
+
+        </div>
+    </div>
+</div>
+
+

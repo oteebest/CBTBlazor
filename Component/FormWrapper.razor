@@ -1,0 +1,49 @@
+﻿
+@if (Show)
+{
+    <div class="modal fade show" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display: block; padding-right: 17px;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <div class="modal-title h4">@Title</div>
+                   
+                    <a @onclick="HideModal" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </a>
+                </div>
+
+                @ChildContent
+
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    public bool Show { get; set; }
+
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public void ShowModal()
+    {
+        Show = true;
+        StateHasChanged();
+    }
+
+    public void HideModal()
+    {
+        Show = false;
+        StateHasChanged();
+    }
+
+
+
+}

@@ -1,0 +1,339 @@
+﻿@using CBTBlazor.Util;
+
+<div class="card">
+    <div class="card-header">
+        Choice Interaction
+        <div>
+            
+            <button @onclick="() => SwitchMode(Utility.QuestionState.Question)"
+                class="@(
+QuestionManagerModel.State == Utility.QuestionState.Question ?
+"btn btn-rounded btn-info"
+:"btn btn-rounded btn-light")"
+                >
+                Question
+            </button>
+            <button @onclick="() => SwitchMode(Utility.QuestionState.Option)"
+                    class="@(
+QuestionManagerModel.State == Utility.QuestionState.Option ?
+"btn btn-rounded btn-info"
+:
+"btn btn-rounded btn-light")">
+                
+                Response
+            </button>
+            
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="col form-group">
+            <table style="width: 100%">
+                <tr>
+                    <td style="width: 70%; vertical-align: top">
+                        <div>
+                            @if (QuestionManagerModel.State == Utility.QuestionState.Question)
+                            {
+                                <textarea style="margin-bottom: 10px"
+                                          class="form-control form-control-sm"
+                                          rows="2"
+                                          placeholder="Enter question"
+                                          name="text"
+                                          @bind="QuestionManagerModel.Text" />
+                            }
+                            else
+                            {
+                                <span>
+                                    <strong>@QuestionManagerModel.Text</strong>
+                                </span>
+
+                            }
+
+
+                            @if (QuestionManagerModel.State == Utility.QuestionState.Option)
+                            {
+                                <div class="alert alert-primary" role="alert">
+
+                                    @(QuestionManagerModel.QuestionType == "SingleChoice"
+                                        ? "Choose correct option"
+                                        : "Choose correct options" )
+                                </div>
+                            }
+                            else
+                            {
+
+                                <div></div>
+
+
+                            }
+
+                            <table style="width: 100%">
+                                <tbody style="width: 100%">
+
+                                    @{ int optionCounter = 1;}
+                                    @foreach (var option in QuestionManagerModel.Options)
+                                    {
+
+                                        if (QuestionManagerModel.State == Utility.QuestionState.Question)
+                                        {
+                                            <tr class="trQuestion"
+                                                style="border-style: dotted">
+                                                <td style="padding: 5px">
+                                                    <input type="text" @bind="option.Text" />
+
+                                                </td>
+
+                                                <td style="width:20px">
+                                                    @if (QuestionManagerModel.State == Utility.QuestionState.Question)
+                                                    {
+                                                        <i class='fas fa-trash-alt'
+                                                           @onclick="() => RemoveOption(option.TemporaryId)">
+                                                        </i>
+                                                    }
+
+                                                </td>
+                                            </tr>
+                                        }
+                                        else if (!string.IsNullOrEmpty(option.Text))
+                                        {
+
+                                            <tr class="trQuestion"
+                                                style=@(QuestionManagerModel.State == Utility.QuestionState.Done ? "" : "borderStyle: dotted")>
+                                                <td style="padding: 5px">
+
+                                                    <label class=@(QuestionManagerModel.QuestionType == "SingleChoice" ?
+                                                                                       "custom-control custom-radio"
+                                                                                       : "custom-control custom-checkbox" )>
+
+
+                                                        @if (QuestionManagerModel.QuestionType.Equals(Utility.QuestionType.SingleChoice.ToString()))
+                                                        {
+
+                                                            if (QuestionManagerModel.State == Utility.QuestionState.Option)
+                                                            {
+
+                                                                <input type="radio"
+                                                                       name="radio-stacked" checked="@option.IsAnswer" @onchange="@(e => ToggleOptionAnswer(e,option.TemporaryId))"
+                                                                       class="custom-control-input" />
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="radio" disabled
+                                                                       name="radio-stacked" checked="@option.IsAnswer"
+                                                                       class="custom-control-input" />
+
+                                                            }
+
+
+                                                        }
+                                                        else
+                                                        {
+
+                                                            if (QuestionManagerModel.State == Utility.QuestionState.Option)
+                                                            {
+
+                                                                if (option.IsAnswer)
+                                                                {
+                                                                    <input type="checkbox"  class="custom-control-input" checked  @onchange="@(e => ToggleOptionAnswer(e,option.TemporaryId))" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="checkbox"  class="custom-control-input"  @onchange="@(e => ToggleOptionAnswer(e,option.TemporaryId))" />
+                                                                }
+
+
+                                                            }
+                                                            else
+                                                            {
+                                                                if (option.IsAnswer)
+                                                                {
+                                                                    <input type="checkbox" disabled class="custom-control-input" checked />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="checkbox" disabled class="custom-control-input" />
+                                                                }
+
+                                                            }
+
+
+                                                        }
+
+                                                        <span class="custom-control-label">
+                                                            @option.Text
+                                                        </span>
+
+                                                    </label>
+
+
+                                                    
+
+
+
+                                                </td>
+
+                                                <td style="width:20px">
+                                                    @if (QuestionManagerModel.State == Utility.QuestionState.Question)
+                                                    {
+                                                        <i class='fas fa-trash-alt'
+                                                           @onclick="() => RemoveOption(option.TemporaryId)">
+                                                        </i>
+                                                    }
+
+                                                </td>
+                                            </tr>
+                                        }
+
+
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @if (QuestionManagerModel.State == Utility.QuestionState.Question)
+                        {
+                            <div @onclick="AddOption" style="padding-top:5">
+
+                                <i class="fas fa-plus-circle"></i> Add option
+                            </div>
+                        }
+                        else
+                        {
+                            <div></div>
+                        }
+
+                    </td>
+
+                    <td style="width: 30%">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="card">
+                                <h5 class="card-header">Question Attributes</h5>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="input-select">
+                                                <strong>Difficulty Level</strong>
+                                            </label>
+                                            @if (QuestionManagerModel.State != Utility.QuestionState.Done)
+                                            {
+                                                <select id="difficultyLevelId"
+                                                        name="difficultyLevelId"                                                      
+                                                        
+                                                        @bind="QuestionManagerModel.DifficultyLevelId"
+                                                        class="form-control form-control-sm">
+                                                    @((MarkupString)"<option value=\"\">" +
+                                                             "Select Difficulty Level</option>")
+
+
+                                                    @foreach (var item in DifficultytList)
+                                                    {
+                                                        if (item.Id == QuestionManagerModel.DifficultyLevelId)
+                                                        {
+                                                            <option selected value="@item.Id">@item.Name</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.Id">@item.Name</option>
+                                                        }
+                                                    }
+
+                                                </select>
+                                            }
+                                            else
+                                            {
+                                                <br />
+                                                <span>@( DifficultytList.FirstOrDefault(u => u.Id == QuestionManagerModel.DifficultyLevelId)  == null ? "" : DifficultytList.FirstOrDefault(u => u.Id == QuestionManagerModel.DifficultyLevelId).Name)</span>
+                                            }
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="input-select">
+                                                <strong>Subject</strong>
+                                            </label>
+                                            @if (QuestionManagerModel.State != Utility.QuestionState.Done)
+                                            {
+                                                <select id="subjectId" name="subjectId"
+                                                         @bind="QuestionManagerModel.SubjectId"
+                                                        class="form-control form-control-sm">
+                                                    @((MarkupString)"<option value=\"\">" +
+                                                          "Select Subject</option>")
+
+                                                    @foreach (var item in SubjectList)
+                                                    {
+                                                        if (item.Id == QuestionManagerModel.SubjectId)
+                                                        {
+                                                            <option selected value="@item.Id">@item.Name</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.Id">@item.Name</option>
+                                                        }
+                                                    }
+
+                                                </select>
+                                            }
+                                            else
+                                            {
+                                                <br />
+                                                <span>@( SubjectList.FirstOrDefault(u => u.Id == QuestionManagerModel.SubjectId)  == null ?  "" : SubjectList.FirstOrDefault(u => u.Id == QuestionManagerModel.SubjectId).Name )</span>
+                                            }
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="input-select">
+                                                <strong>Score</strong>
+                                            </label>
+                                            @if (QuestionManagerModel.State != Utility.QuestionState.Done)
+                                            {
+                                                <input   @bind="QuestionManagerModel.ScoreValue"
+                                                       style="margin-bottom: 10px"
+                                                       class="form-control form-control-sm"
+                                                       type="number"
+                                                       name="score"/>
+                                            }
+                                            else
+                                            {
+                                                <br />
+                                                <span>@QuestionManagerModel.ScoreValue</span>
+                                            }
+
+                                            
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+
+                    <td>
+                        @if (QuestionManagerModel.State == Utility.QuestionState.Done)
+                        {
+                            <button @onclick="() =>  HandleSubmit(QuestionManagerModel)"
+                                    style='width:120px' class='btn btn-rounded btn-primary float-right'>
+                                Save
+                            </button>
+                        }
+                        else
+                        {
+                            <button @onclick="() => SwitchMode(Utility.QuestionState.Done)" style="width: 120px"
+                                    class="btn btn-rounded btn-primary float-right">
+                                Done
+                            </button>
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}

@@ -1,0 +1,35 @@
+﻿
+<EditForm Model="@model" OnValidSubmit="@HandleSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+    <DataAnnotationsValidator />
+    <div class="modal-body">
+
+        <InputText id="inputName" type="hidden" @bind-Value="model.Id"></InputText>
+
+        <div class="form-group">
+            <label for="inputName">Name</label>
+            <InputText id="inputName" @bind-Value="model.Name" placeholder="Enter assessment name 1" class="form-control"></InputText>
+            <ValidationMessage class="offset-sm-3 col-sm-8 text-danger" For="@(() => model.Name)" />
+        </div>
+        <div class="form-group">
+            <label for="inputInstructions" class="col-form-label">Instruction</label>
+            <InputTextArea rows="4" id="inputInstructions" @bind-Value="model.Instructions" class="form-control" placeholder="Enter instructions"></InputTextArea>
+            <ValidationMessage class="offset-sm-3 col-sm-8 text-danger" For="@(() => model.Instructions)" />
+        </div>
+        <div class="form-group">
+            <label for="inputDuration">Duration</label>
+            <InputNumber id="inputName" @bind-Value="model.Duration" placeholder="Enter duration" class="form-control"></InputNumber>
+            <ValidationMessage class="offset-sm-3 col-sm-8 text-danger" For="@(() => model.Duration)" />
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+        <button class="btn btn-secondary" @onclick="CloseModal">Close</button>
+        <button class="btn btn-primary" type="submit">Save Changes</button>
+    </div>
+
+
+</EditForm>
+
+
