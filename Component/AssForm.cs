@@ -10,7 +10,6 @@ namespace CBTBlazor.Component
 {
     public partial class AssForm
     {
-
         [Parameter]
         public AssessmentItem model { get; set; } = new AssessmentItem();
 
